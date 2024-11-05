@@ -38,13 +38,14 @@ A simple web application to animate NFL plays using FastAPI and Streamlit.
    uv install
    ```
 
-## Setup
+## Local Setup
 
 1. **Database Setup:**
 
-   - Download the public NFL data from Kaggle and import it into a local PostgreSQL database.
+   - NFL Data has been downloaded from https://www.kaggle.com/competitions/nfl-big-data-bowl-2025 from Kaggle and imported into a local PostgreSQL DB.
    - Ensure you have PostgreSQL installed and running on your machine.
-   - Create a new database and import the data into it.
+   - Create a new database and import the data into it. Table names are 1:1 with the datasets except for `tracking_data` which is the aggregated full set of all `tracking_week_*` csvs.
+   - Additional data is available from past years which you may add yourself if you so desire.
 
 2. **Environment Variables:**
 
@@ -81,10 +82,6 @@ A simple web application to animate NFL plays using FastAPI and Streamlit.
 
 - Use the Streamlit interface to select a week, game, and play to animate.
 - The app will fetch data from the FastAPI server and display an animation of the selected play.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
 
 ## License
 
