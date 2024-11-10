@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from app.api.api import router as api_router
+from app.routers import games, plays, weeks
 
 app = FastAPI()
 
 # Include the API router
-app.include_router(api_router, prefix="/api")
-
-# Additional setup can be done here
+app.include_router(games.router, prefix="/api")
+app.include_router(plays.router, prefix="/api")
+app.include_router(weeks.router, prefix="/api")
