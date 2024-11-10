@@ -1,6 +1,9 @@
 # Aider code assistant files
 .aider*
 
+# ruff cache files
+.ruff_cache
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -23,19 +23,19 @@ A simple web application to animate NFL plays using FastAPI and Streamlit.
 2. **Set up a virtual environment using `uv`:**
 
    ```bash
-   uv create
+   uv venv
    ```
 
 3. **Activate the virtual environment:**
 
    ```bash
-   uv activate
+   source .venv/bin/activate
    ```
 
 4. **Install the dependencies:**
 
    ```bash
-   uv install
+   uv sync 
    ```
 
 ## Local Setup
