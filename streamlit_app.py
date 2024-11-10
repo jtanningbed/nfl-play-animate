@@ -8,9 +8,6 @@ st.set_page_config(layout="wide")
 
 st.title("NFL Play Animator")
 
-# game_id = st.number_input("Enter Game ID", min_value=1)
-# play_id = st.number_input("Enter Play ID", min_value=1)
-
 # Fetch weeks from the API
 response = requests.get("http://localhost:8000/api/weeks")
 weeks = response.json()["weeks"]
