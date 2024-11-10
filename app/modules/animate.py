@@ -4,9 +4,9 @@ from app.modules.colors import ColorPairs
 
 
 def extract_play_info(selected_play_df, selected_tracking_df):
-    line_of_scrimmage = selected_play_df["absoluteyardlinenumber"].values[0]
-    yards_to_go = selected_play_df["yardstogo"].values[0]
-    play_direction = selected_tracking_df["playdirection"].values[0]
+    line_of_scrimmage = selected_play_df["absolute_yardline_number"].values[0]
+    yards_to_go = selected_play_df["yards_to_go"].values[0]
+    play_direction = selected_tracking_df["play_direction"].values[0]
     first_down_marker = (
         line_of_scrimmage + yards_to_go
         if play_direction == "right"
@@ -14,14 +14,14 @@ def extract_play_info(selected_play_df, selected_tracking_df):
     )
 
     return {
-        "game_id": selected_play_df["gameid"].values[0],
-        "play_id": selected_play_df["playid"].values[0],
+        "game_id": selected_play_df["game_id"].values[0],
+        "play_id": selected_play_df["play_id"].values[0],
         "line_of_scrimmage": line_of_scrimmage,
         "first_down_marker": first_down_marker,
         "down": selected_play_df["down"].values[0],
         "quarter": selected_play_df["quarter"].values[0],
         "play_description": format_play_description(
-            selected_play_df["playdescription"].values[0]
+            selected_play_df["play_description"].values[0]
         ),
     }
 
@@ -165,8 +165,8 @@ def create_line_markers(line_of_scrimmage, first_down_marker):
 
 def create_endzone_colors(color_orders, selected_game_df):
     endzoneColors = {
-        0: color_orders[selected_game_df["hometeamabbr"].values[0]][0],
-        110: color_orders[selected_game_df["visitorteamabbr"].values[0]][0],
+        0: color_orders[selected_game_df["home_team_abbr"].values[0]][0],
+        110: color_orders[selected_game_df["visitor_team_abbr"].values[0]][0],
     }
     return [
         go.Scatter(
@@ -233,7 +233,7 @@ def plot_players(selected_tracking_df, frame_id, color_orders):
     for team in selected_tracking_df["club"].unique():
         plot_df = selected_tracking_df[
             (selected_tracking_df["club"] == team)
-            & (selected_tracking_df["frameid"] == frame_id)
+            & (selected_tracking_df["frame_id"] == frame_id)
         ]
 
         marker = go.scatter.Marker(
@@ -249,7 +249,7 @@ def plot_players(selected_tracking_df, frame_id, color_orders):
                 f"Acceleration: {round(a * YDS_PER_SEC_TO_MPH, 2)} MPH/s<br>"
                 f"Direction: {round(dir, 2)}°<br>"
                 for displayName, s, a, dir in zip(
-                    plot_df["displayname"], plot_df["s"], plot_df["a"], plot_df["dir"]
+                    plot_df["display_name"], plot_df["s"], plot_df["a"], plot_df["dir"]
                 )
             ]
             data.append(
@@ -304,7 +304,7 @@ def animate_play(
         redraw=redraw,
     )
 
-    frame_ids = sorted(selected_tracking_df["frameid"].unique())
+    frame_ids = sorted(selected_tracking_df["frame_id"].unique())
     frames = []
     for frame_id in frame_ids:
         data = (
@@ -358,8 +358,8 @@ def animate_play(
         )
 
     for x_min, angle, team_key in [
-        (0, 270, "hometeamabbr"),
-        (110, 90, "visitorteamabbr"),
+        (0, 270, "home_team_abbr"),
+        (110, 90, "visitor_team_abbr"),
     ]:
         fig.add_annotation(
             x=x_min + 5,

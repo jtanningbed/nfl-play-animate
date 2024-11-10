@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 import pandas as pd
 from app.modules.animate import animate_play
+from app.schemas.game import GameResponse
+from app.schemas.play_response import PlaySummaryResponse, PlayResponse
 
 # Set page configuration for a wider layout
 st.set_page_config(layout="wide")
@@ -17,24 +19,25 @@ selected_week = st.selectbox("Select Week", weeks, format_func=lambda w: f"Week 
 
 # Fetch games for the selected week
 game_response = requests.get(f"http://localhost:8000/api/games/{selected_week}")
-games = game_response.json()["games"]
+game_data = game_response.json()
+games = GameResponse(**game_data).games
 
 # Dropdown for games, with display of Home vs. Visitor
-game_names = [f"{game['hometeamabbr']} vs {game['visitorteamabbr']}" for game in games]
-game_ids = {name: game["gameid"] for name, game in zip(game_names, games)}
+game_names = [f"{game.home_team_abbr} vs {game.visitor_team_abbr}" for game in games]
+game_ids = {name: game.game_id for name, game in zip(game_names, games)}
 selected_game_name = st.selectbox("Select Game", game_names)
 selected_game_id = game_ids[selected_game_name]
 
 # Fetch plays for the selected game
 plays_response = requests.get(f"http://localhost:8000/api/plays/{selected_game_id}")
-plays = plays_response.json()["plays"]
+play_summary = plays_response.json()
+plays = PlaySummaryResponse(**play_summary).plays
 
 # Dropdown for plays, ordered by quarter and game clock
 play_descriptions = [
-    f"{play['quarter']}Q {play['gameclock']} {play['playdescription']}"
-    for play in plays
+    f"{play.quarter}Q {play.game_clock} {play.play_description}" for play in plays
 ]
-play_ids = {desc: play["playid"] for desc, play in zip(play_descriptions, plays)}
+play_ids = {desc: play.play_id for desc, play in zip(play_descriptions, plays)}
 selected_play_desc = st.selectbox("Select Play", play_descriptions)
 selected_play_id = play_ids[selected_play_desc]
 
@@ -43,11 +46,18 @@ if st.button("Animate Play"):
         f"http://localhost:8000/api/play/{selected_game_id}/{selected_play_id}"
     )
     data = response.json()
+    full_play_response = PlayResponse(**data)
 
     # Convert data back to DataFrames
-    game_data = pd.DataFrame(data["game_data"])
-    play_data = pd.DataFrame(data["play_data"])
-    tracking_data = pd.DataFrame(data["tracking_data"])
+    game_data = pd.DataFrame(
+        [item.model_dump() for item in full_play_response.game_data]
+    )
+    play_data = pd.DataFrame(
+        [item.model_dump() for item in full_play_response.play_data]
+    )
+    tracking_data = pd.DataFrame(
+        [item.model_dump() for item in full_play_response.tracking_data]
+    )
 
     # Display play information
     st.subheader("Play Information")
@@ -55,7 +65,7 @@ if st.button("Animate Play"):
     st.write(f"Play ID: {selected_play_id}")
     if not play_data.empty:
         st.write(
-            f"Play Description: {play_data['quarter'].iloc[0]}Q {play_data['playdescription'].iloc[0]}"
+            f"Play Description: {play_data['quarter'].iloc[0]}Q {play_data['play_description'].iloc[0]}"
         )
 
     # Call animate_play function

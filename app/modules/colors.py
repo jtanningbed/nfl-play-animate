@@ -1,4 +1,6 @@
 import numpy as np
+import nfl_data_py as nfl
+
 
 # You can inherit these colors from nflverse, this is for completeness/convenience
 colors = {
@@ -36,6 +38,12 @@ colors = {
     "WAS": ["#5A1414", "#FFB612"],
     "football": ["#CBB67C", "#663831"],
 }
+
+teams = nfl.import_team_desc()
+team_colors = teams.set_index("team_abbr")[
+    ["team_color", "team_color2", "team_color3", "team_color4"]
+].to_dict(orient="index")
+# print(team_colors["ARI"])
 
 
 # Color utility functions (same as before)
