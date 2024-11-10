@@ -16,7 +16,7 @@ A simple web application to animate NFL plays using FastAPI and Streamlit.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/nfl-play-animate.git
+   git clone https://github.com/jtanningbed/nfl-play-animate.git
    cd nfl-play-animate
    ```
 
