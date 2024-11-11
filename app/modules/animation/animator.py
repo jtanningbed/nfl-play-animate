@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import pandas as pd
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
@@ -368,6 +369,16 @@ class PlayAnimator:
         
         updatemenus, sliders = self._create_animation_controls()
         
+        return self._create_figure(frames, updatemenus, sliders)
+
+    def _create_figure(
+        self,
+        frames: list[FrameInfo],
+        updatemenus: list[dict],
+        sliders: dict,
+    ) -> go.Figure:
+        """Create the final figure with all components."""
+        
         # Add slider steps
         sliders["steps"] = [
             {
@@ -404,3 +415,31 @@ class PlayAnimator:
         self._add_annotations(fig)
         
         return fig
+
+
+def animate_play(
+    selected_game_df: pd.DataFrame,
+    selected_play_df: pd.DataFrame,
+    selected_tracking_df: pd.DataFrame,
+    frame_duration: int = 100,
+    transition_duration: int = 0,
+    slider_transition_duration: int = 300,
+    redraw: bool = True,
+) -> go.Figure:
+    """Create an animated visualization of an NFL play."""
+    config = AnimationConfig(
+        frame_duration=frame_duration,
+        transition_duration=transition_duration,
+        slider_transition_duration=slider_transition_duration,
+        redraw=redraw,
+    )
+    
+    animator = PlayAnimator(
+        game_df=selected_game_df,
+        play_df=selected_play_df,
+        tracking_df=selected_tracking_df,
+        color_provider=ColorManager(),
+        config=config,
+    )
+    
+    return animator.create_animation()
