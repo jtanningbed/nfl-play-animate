@@ -1,24 +1,19 @@
 from dataclasses import dataclass
-import pandas as pd
-from app.modules.animation.colors import ColorManager
-import plotly.graph_objects as go
-import pandas as pd
 import numpy as np
-from typing import Sequence
-
+import pandas as pd
+import plotly.graph_objects as go
+from app.modules.animation.colors import ColorManager
 from app.modules.animation.types import (
     PlayInfo,
     AnimationConfig,
     FrameInfo,
     ColorProvider,
-    FrameData,
     PlayerData,
 )
 
 @dataclass
 class PlayAnimator:
     """Handles the animation of NFL plays."""
-    
     game_df: pd.DataFrame
     play_df: pd.DataFrame
     tracking_df: pd.DataFrame
@@ -29,7 +24,6 @@ class PlayAnimator:
         """Initialize play info and team colors after instance creation."""
         self.play_info = self._extract_play_info()
         self.team_colors = self._setup_team_colors()
-        
     def _extract_play_info(self) -> PlayInfo:
         """Extract play information from the dataframes."""
         los = self.play_df["absolute_yardline_number"].values[0]
