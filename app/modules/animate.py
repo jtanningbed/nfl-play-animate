@@ -343,7 +343,7 @@ def animate_play(
         })
         frames.append(go.Frame(data=data, name=str(frame_id)))
 
-    layout = create_layout(play_info, updatemenus_dict, sliders_dict)
+    layout = create_layout(updatemenus_dict, sliders_dict)
 
     fig = go.Figure(data=frames[0]["data"], layout=layout, frames=frames[1:])
 
