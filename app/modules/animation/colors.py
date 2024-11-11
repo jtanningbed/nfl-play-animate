@@ -5,46 +5,28 @@ import nfl_data_py as nfl
 from app.modules.animation.types import TeamColors
 
 class ColorManager:
+    FOOTBALL_COLORS = ["#CBB67C", "#663831"]
+
     def __init__(self) -> None:
-        self._colors: Dict[str, List[str]] = {
-    "ARI": ["#97233F", "#000000", "#FFB612"],
-    "ATL": ["#A71930", "#000000", "#A5ACAF"],
-    "BAL": ["#241773", "#000000"],
-    "BUF": ["#00338D", "#C60C30"],
-    "CAR": ["#0085CA", "#101820", "#BFC0BF"],
-    "CHI": ["#0B162A", "#C83803"],
-    "CIN": ["#FB4F14", "#000000"],
-    "CLE": ["#311D00", "#FF3C00"],
-    "DAL": ["#003594", "#041E42", "#869397"],
-    "DEN": ["#FB4F14", "#002244"],
-    "DET": ["#0076B6", "#B0B7BC", "#000000"],
-    "GB": ["#203731", "#FFB612"],
-    "HOU": ["#03202F", "#A71930"],
-    "IND": ["#002C5F", "#A2AAAD"],
-    "JAX": ["#101820", "#D7A22A", "#9F792C"],
-    "KC": ["#E31837", "#FFB81C"],
-    "LA": ["#003594", "#FFA300", "#FF8200"],
-    "LAC": ["#0080C6", "#FFC20E", "#FFFFFF"],
-    "LV": ["#000000", "#A5ACAF"],
-    "MIA": ["#008E97", "#FC4C02", "#005778"],
-    "MIN": ["#4F2683", "#FFC62F"],
-    "NE": ["#002244", "#C60C30", "#B0B7BC"],
-    "NO": ["#101820", "#D3BC8D"],
-    "NYG": ["#0B2265", "#A71930", "#A5ACAF"],
-    "NYJ": ["#125740", "#000000", "#FFFFFF"],
-    "PHI": ["#004C54", "#A5ACAF", "#ACC0C6"],
-    "PIT": ["#FFB612", "#101820"],
-    "SEA": ["#002244", "#69BE28", "#A5ACAF"],
-    "SF": ["#AA0000", "#B3995D"],
-    "TB": ["#D50A0A", "#FF7900", "#0A0A08"],
-    "TEN": ["#0C2340", "#4B92DB", "#C8102E"],
-    "WAS": ["#5A1414", "#FFB612"],
-    "football": ["#CBB67C", "#663831"],
-        }
+        """Initialize the ColorManager with NFL team colors from nfl_data_py."""
         self.teams = nfl.import_team_desc()
-        self.team_colors = self.teams.set_index("team_abbr")[
+        team_colors_df = self.teams.set_index("team_abbr")[
             ["team_color", "team_color2", "team_color3", "team_color4"]
-        ].to_dict(orient="index")
+        ]
+        
+        # Convert team colors to our format and add football colors
+        self._colors: Dict[str, List[str]] = {}
+        for team in team_colors_df.index:
+            colors = [
+                f"#{color}" if color and not color.startswith("#") else color
+                for color in team_colors_df.loc[team]
+                if color and color.strip()
+            ]
+            if colors:  # Only add teams with at least one color
+                self._colors[team] = colors
+
+        # Add football colors
+        self._colors["football"] = self.FOOTBALL_COLORS
 
     def hex_to_rgb(self, hex_color: str) -> NDArray[np.int_]:
         """Convert hex color to RGB array."""
