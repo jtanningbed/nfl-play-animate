@@ -1,8 +1,6 @@
-from typing import Dict, List
 import numpy as np
 from numpy.typing import NDArray
 import nfl_data_py as nfl
-from app.modules.animation.types import TeamColors
 
 class ColorManager:
     FOOTBALL_COLORS = ["#CBB67C", "#663831"]
@@ -15,7 +13,7 @@ class ColorManager:
         ]
         
         # Convert team colors to our format and add football colors
-        self._colors: Dict[str, List[str]] = {}
+        self._colors: dict[str, list[str]] = {}
         for team in team_colors_df.index:
             colors = [
                 f"#{color}" if color and not color.startswith("#") else color
@@ -50,7 +48,7 @@ class ColorManager:
         """Get color scheme for a team."""
         return self._colors.get(team, ["#FFFFFF", "#000000"])
 
-    def get_contrasting_pairs(self, team1: str, team2: str) -> Dict[str, List[str]]:
+    def get_contrasting_pairs(self, team1: str, team2: str) -> dict[str, list[str]]:
         """Get contrasting color pairs for two teams."""
         color_array_1 = self.get_team_colors(team1)
         color_array_2 = self.get_team_colors(team2)

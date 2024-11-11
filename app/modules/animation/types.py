@@ -1,18 +1,10 @@
-from typing import TypedDict, NotRequired, Literal, Protocol
+from typing import Literal, Protocol
 from dataclasses import dataclass
 from typing import TypeAlias
-import pandas as pd
 import plotly.graph_objects as go
-from numpy.typing import NDArray
-import numpy as np
 
 PlayDirection = Literal["left", "right"]
 FrameData: TypeAlias = list[go.Scatter]
-
-class TeamColors(TypedDict):
-    primary: str
-    secondary: str
-    tertiary: NotRequired[str]
 
 @dataclass(frozen=True)
 class PlayInfo:
