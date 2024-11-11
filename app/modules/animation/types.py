@@ -1,4 +1,4 @@
-from typing import Literal, Protocol
+from typing import Literal, Protocol, Self
 from dataclasses import dataclass
 from typing import TypeAlias
 import plotly.graph_objects as go
@@ -33,7 +33,7 @@ class FrameInfo:
     name: str
 
 class ColorProvider(Protocol):
-    def get_contrasting_pairs(self, team1: str, team2: str) -> dict[str, list[str]]: ...
+    def get_contrasting_pairs(self: Self, team1: str, team2: str) -> dict[str, list[str]]: ...
 
 @dataclass(frozen=True)
 class PlayerData:
