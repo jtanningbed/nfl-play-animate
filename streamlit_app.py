@@ -49,15 +49,15 @@ if st.button("Animate Play"):
     full_play_response = PlayResponse(**data)
 
     # Convert data back to DataFrames
-    game_data = pd.DataFrame(
-        [item.model_dump() for item in full_play_response.game_data]
-    )
-    play_data = pd.DataFrame(
-        [item.model_dump() for item in full_play_response.play_data]
-    )
-    tracking_data = pd.DataFrame(
-        [item.model_dump() for item in full_play_response.tracking_data]
-    )
+    game_data = pd.DataFrame([
+        item.model_dump() for item in full_play_response.game_data
+    ])
+    play_data = pd.DataFrame([
+        item.model_dump() for item in full_play_response.play_data
+    ])
+    tracking_data = pd.DataFrame([
+        item.model_dump() for item in full_play_response.tracking_data
+    ])
 
     # Display play information
     st.subheader("Play Information")
@@ -75,8 +75,6 @@ if st.button("Animate Play"):
     # Update layout for correct aspect ratio
     fig.update_layout(
         autosize=True,
-        # width=1000,
-        # height=600,
         margin=dict(l=0, r=0, b=0, t=30),
         yaxis=dict(scaleanchor="x", scaleratio=1),
     )

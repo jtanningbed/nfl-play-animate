@@ -1,9 +1,13 @@
 import plotly.graph_objects as go
+import pandas as pd
 import numpy as np
 from app.modules.colors import ColorPairs
+from typing import Any
 
 
-def extract_play_info(selected_play_df, selected_tracking_df):
+def extract_play_info(
+    selected_play_df: pd.DataFrame, selected_tracking_df: pd.DataFrame
+) -> dict[str, str | int]:
     line_of_scrimmage = selected_play_df["absolute_yardline_number"].values[0]
     yards_to_go = selected_play_df["yards_to_go"].values[0]
     play_direction = selected_tracking_df["play_direction"].values[0]
@@ -26,7 +30,7 @@ def extract_play_info(selected_play_df, selected_tracking_df):
     }
 
 
-def format_play_description(description):
+def format_play_description(description: str) -> str:
     if len(description.split(" ")) > 15 and len(description) > 115:
         return (
             " ".join(description.split(" ")[0:16])
@@ -37,11 +41,11 @@ def format_play_description(description):
 
 
 def create_animation_controls(
-    frame_duration=100,
-    transition_duration=0,
-    slider_transition_duration=300,
-    redraw=False,
-):
+    frame_duration: int = 100,
+    transition_duration: int = 0,
+    slider_transition_duration: int = 300,
+    redraw: bool = False,
+) -> tuple[dict[str, Any], dict[str, Any]]:
     updatemenus_dict = [
         {
             "buttons": [
@@ -106,7 +110,7 @@ def create_animation_controls(
     return updatemenus_dict, sliders_dict
 
 
-def create_field_markers():
+def create_field_markers() -> list[go.Scatter]:
     markers = []
     for y in [5, 53.5 - 5]:
         markers.append(
@@ -142,7 +146,9 @@ def create_field_markers():
     return markers
 
 
-def create_line_markers(line_of_scrimmage, first_down_marker):
+def create_line_markers(
+    line_of_scrimmage: float, first_down_marker: float
+) -> list[go.Scatter]:
     return [
         go.Scatter(
             x=[line_of_scrimmage, line_of_scrimmage],
@@ -163,7 +169,9 @@ def create_line_markers(line_of_scrimmage, first_down_marker):
     ]
 
 
-def create_endzone_colors(color_orders, selected_game_df):
+def create_endzone_colors(
+    color_orders: dict[str, list[str]], selected_game_df: pd.DataFrame
+) -> list[go.Scatter]:
     endzoneColors = {
         0: color_orders[selected_game_df["home_team_abbr"].values[0]][0],
         110: color_orders[selected_game_df["visitor_team_abbr"].values[0]][0],
@@ -184,7 +192,9 @@ def create_endzone_colors(color_orders, selected_game_df):
     ]
 
 
-def create_layout(play_info, updatemenus_dict, sliders_dict):
+def create_layout(
+    updatemenus_dict: dict[str, Any], sliders_dict: dict[str, Any]
+) -> go.Layout:
     return go.Layout(
         autosize=True,
         width=None,  # Allow dynamic resizing
@@ -225,7 +235,11 @@ def create_layout(play_info, updatemenus_dict, sliders_dict):
     )
 
 
-def plot_players(selected_tracking_df, frame_id, color_orders):
+def plot_players(
+    selected_tracking_df: pd.DataFrame,
+    frame_id: int,
+    color_orders: dict[str, list[str]],
+) -> list[go.Scatter]:
     # Conversion factor
     YDS_PER_SEC_TO_MPH = 2.04545  # Convert yards/second to miles/hour (also applies to yards/second^2 to miles/hour/second)
 
@@ -284,16 +298,15 @@ def plot_players(selected_tracking_df, frame_id, color_orders):
 
 
 def animate_play(
-    selected_game_df,
-    selected_play_df,
-    selected_tracking_df,
-    frame_duration=100,
-    transition_duration=0,
-    slider_transition_duration=300,
-    redraw=True,
-):
+    selected_game_df: pd.DataFrame,
+    selected_play_df: pd.DataFrame,
+    selected_tracking_df: pd.DataFrame,
+    frame_duration: int = 100,
+    transition_duration: int = 0,
+    slider_transition_duration: int = 300,
+    redraw: bool = True,
+) -> go.Figure:
     play_info = extract_play_info(selected_play_df, selected_tracking_df)
-
     team_combos = list(set(selected_tracking_df["club"].unique()) - set(["football"]))
     color_orders = ColorPairs(team_combos[0], team_combos[1])
 
@@ -316,20 +329,18 @@ def animate_play(
             + plot_players(selected_tracking_df, frame_id, color_orders)
         )
 
-        sliders_dict["steps"].append(
-            {
-                "args": [
-                    [frame_id],  # adjusted to account for zero-based indexing
-                    {
-                        "frame": {"duration": 100, "redraw": True},
-                        "mode": "immediate",
-                        "transition": {"duration": 0},
-                    },
-                ],
-                "label": str(frame_id),
-                "method": "animate",
-            }
-        )
+        sliders_dict["steps"].append({
+            "args": [
+                [frame_id],  # adjusted to account for zero-based indexing
+                {
+                    "frame": {"duration": 100, "redraw": True},
+                    "mode": "immediate",
+                    "transition": {"duration": 0},
+                },
+            ],
+            "label": str(frame_id),
+            "method": "animate",
+        })
         frames.append(go.Frame(data=data, name=str(frame_id)))
 
     layout = create_layout(play_info, updatemenus_dict, sliders_dict)

@@ -23,5 +23,13 @@ dependencies = [
     "uvicorn>=0.32.0",
 ]
 
+[tool.ruff]
+target-version = "py313"
+
 [tool.ruff.lint]
-select = ["NPY201"]
+ignore = ["ANN401"]
+select = ["ANN", "NPY201"]
+
+[tool.ruff.format]
+docstring-code-format = true
+preview = true

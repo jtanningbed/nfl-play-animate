@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get("/games/{week}", response_model=GameResponse)
-def read_games_by_week(week: int, db: Session = Depends(get_db)):
+def read_games_by_week(week: int, db: Session = Depends(get_db)) -> GameResponse:
     try:
         return {"games": crud.get_games_by_week(db, week)}
     except Exception as e:

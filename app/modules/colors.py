@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.typing import NDArray
 import nfl_data_py as nfl
 
 
@@ -43,15 +44,14 @@ teams = nfl.import_team_desc()
 team_colors = teams.set_index("team_abbr")[
     ["team_color", "team_color2", "team_color3", "team_color4"]
 ].to_dict(orient="index")
-# print(team_colors["ARI"])
 
 
 # Color utility functions (same as before)
-def hex_to_rgb_array(hex_color):
+def hex_to_rgb_array(hex_color: str) -> NDArray[np.int_]:
     return np.array(tuple(int(hex_color.lstrip("#")[i : i + 2], 16) for i in (0, 2, 4)))
 
 
-def ColorDistance(hex1, hex2):
+def ColorDistance(hex1: str, hex2: str) -> int:
     if hex1 == hex2:
         return 0
     rgb1 = hex_to_rgb_array(hex1)
@@ -61,7 +61,7 @@ def ColorDistance(hex1, hex2):
     return d
 
 
-def ColorPairs(team1, team2):
+def ColorPairs(team1: str, team2: str) -> dict[str, list[str]]:
     color_array_1 = colors[team1]
     color_array_2 = colors[team2]
     if ColorDistance(color_array_1[0], color_array_2[0]) < 500:
