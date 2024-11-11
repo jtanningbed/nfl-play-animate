@@ -44,7 +44,9 @@ class ColorManager:
         rm = 0.5 * (rgb1[0] + rgb2[0])
         weights = np.array([2 + rm, 4, 3 - rm])
         
-        return float(np.sqrt(np.sum(weights * (rgb1 - rgb2) ** 2)))
+        squared_distance = np.sum(weights * (rgb1 - rgb2) ** 2)
+        # Ensure we don't take sqrt of negative number due to floating point imprecision
+        return float(np.sqrt(max(0.0, squared_distance)))
 
     def get_team_colors(self: Self, team: str) -> list[str]:
         """Get color scheme for a team."""
