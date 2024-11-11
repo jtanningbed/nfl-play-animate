@@ -44,7 +44,7 @@ class ColorManager:
         
         return float(np.sqrt(np.sum(weights * (rgb1 - rgb2) ** 2)))
 
-    def get_team_colors(self, team: str) -> List[str]:
+    def get_team_colors(self, team: str) -> list[str]:
         """Get color scheme for a team."""
         return self._colors.get(team, ["#FFFFFF", "#000000"])
 
