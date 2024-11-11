@@ -1,4 +1,4 @@
-from typing import TypedDict, NotRequired, Literal
+from typing import TypedDict, NotRequired, Literal, Protocol
 from dataclasses import dataclass
 from typing import TypeAlias
 import pandas as pd
@@ -33,3 +33,21 @@ class AnimationConfig:
     redraw: bool = True
     marker_size: int = 15
     field_color: str = "#00B140"
+
+@dataclass(frozen=True)
+class FrameInfo:
+    frame_id: int
+    data: FrameData
+    name: str
+
+class ColorProvider(Protocol):
+    def get_contrasting_pairs(self, team1: str, team2: str) -> dict[str, list[str]]: ...
+
+@dataclass(frozen=True)
+class PlayerData:
+    x: float
+    y: float
+    speed: float
+    acceleration: float
+    direction: float
+    display_name: str
