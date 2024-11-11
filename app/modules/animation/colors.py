@@ -1,14 +1,16 @@
+from typing import Final
 import numpy as np
 from numpy.typing import NDArray
 import nfl_data_py as nfl
+import pandas as pd
 
 class ColorManager:
-    FOOTBALL_COLORS = ["#CBB67C", "#663831"]
+    FOOTBALL_COLORS: Final[list[str]] = ["#CBB67C", "#663831"]
 
     def __init__(self) -> None:
         """Initialize the ColorManager with NFL team colors from nfl_data_py."""
-        self.teams = nfl.import_team_desc()
-        team_colors_df = self.teams.set_index("team_abbr")[
+        self.teams: pd.DataFrame = nfl.import_team_desc()
+        team_colors_df: pd.DataFrame = self.teams.set_index("team_abbr")[
             ["team_color", "team_color2", "team_color3", "team_color4"]
         ]
         
