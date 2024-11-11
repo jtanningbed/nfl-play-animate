@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import pandas as pd
+from app.modules.animation.colors import ColorManager
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
