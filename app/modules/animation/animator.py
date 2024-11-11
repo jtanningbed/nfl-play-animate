@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Self
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -20,11 +21,11 @@ class PlayAnimator:
     color_provider: ColorProvider
     config: AnimationConfig = AnimationConfig()
 
-    def __post_init__(self) -> None:
+    def __post_init__(self: Self) -> None:
         """Initialize play info and team colors after instance creation."""
         self.play_info = self._extract_play_info()
         self.team_colors = self._setup_team_colors()
-    def _extract_play_info(self) -> PlayInfo:
+    def _extract_play_info(self: Self) -> PlayInfo:
         """Extract play information from the dataframes."""
         los = self.play_df["absolute_yardline_number"].values[0]
         yards_to_go = self.play_df["yards_to_go"].values[0]
@@ -47,19 +48,19 @@ class PlayAnimator:
             play_direction=play_direction,
         )
 
-    def _setup_team_colors(self) -> dict[str, list[str]]:
+    def _setup_team_colors(self: Self) -> dict[str, list[str]]:
         """Set up team color schemes."""
         team_combos = list(set(self.tracking_df["club"].unique()) - {"football"})
         return self.color_provider.get_contrasting_pairs(team_combos[0], team_combos[1])
 
-    def _format_play_description(self, description: str) -> str:
+    def _format_play_description(self: Self, description: str) -> str:
         """Format play description text with line breaks if needed."""
         words = description.split()
         if len(words) > 15 and len(description) > 115:
             return " ".join(words[:16]) + "<br>" + " ".join(words[16:])
         return description
 
-    def _create_field_markers(self) -> list[go.Scatter]:
+    def _create_field_markers(self: Self) -> list[go.Scatter]:
         """Create the field yard markers."""
         markers = []
         
@@ -98,7 +99,7 @@ class PlayAnimator:
             )
         return markers
 
-    def _create_line_markers(self) -> list[go.Scatter]:
+    def _create_line_markers(self: Self) -> list[go.Scatter]:
         """Create line of scrimmage and first down markers."""
         return [
             go.Scatter(
@@ -119,7 +120,7 @@ class PlayAnimator:
             ),
         ]
 
-    def _create_endzone_colors(self) -> list[go.Scatter]:
+    def _create_endzone_colors(self: Self) -> list[go.Scatter]:
         """Create colored endzones."""
         endzone_colors = {
             0: self.team_colors[self.game_df["home_team_abbr"].values[0]][0],
@@ -141,7 +142,7 @@ class PlayAnimator:
             for x_min in [0, 110]
         ]
 
-    def _create_player_traces(self, frame_id: int) -> list[go.Scatter]:
+    def _create_player_traces(self: Self, frame_id: int) -> list[go.Scatter]:
         """Create player position traces for a given frame."""
         YDS_PER_SEC_TO_MPH = 2.04545
         traces = []
@@ -202,7 +203,7 @@ class PlayAnimator:
                 
         return traces
 
-    def _create_frame(self, frame_id: int) -> FrameInfo:
+    def _create_frame(self: Self, frame_id: int) -> FrameInfo:
         """Create a single animation frame."""
         data = (
             self._create_field_markers()
@@ -217,7 +218,7 @@ class PlayAnimator:
             name=str(frame_id)
         )
 
-    def _create_animation_controls(self) -> tuple[list[dict], dict]:
+    def _create_animation_controls(self: Self) -> tuple[list[dict], dict]:
         """Create animation control elements."""
         updatemenus = [{
             "buttons": [
@@ -285,7 +286,7 @@ class PlayAnimator:
 
         return updatemenus, sliders
 
-    def _create_layout(self, updatemenus: list[dict], sliders: dict) -> go.Layout:
+    def _create_layout(self: Self, updatemenus: list[dict], sliders: dict) -> go.Layout:
         """Create the plot layout."""
         return go.Layout(
             autosize=True,
@@ -325,7 +326,7 @@ class PlayAnimator:
             ],
         )
 
-    def _add_annotations(self, fig: go.Figure) -> None:
+    def _add_annotations(self: Self, fig: go.Figure) -> None:
         """Add first down markers and team abbreviations to the figure."""
         # Add first down markers
         for y_val in [0, 53]:
@@ -357,7 +358,7 @@ class PlayAnimator:
                 textangle=angle,
             )
 
-    def create_animation(self) -> go.Figure:
+    def create_animation(self: Self) -> go.Figure:
         """Create the complete play animation."""
         frame_ids = sorted(self.tracking_df["frame_id"].unique())
         frames = [self._create_frame(frame_id) for frame_id in frame_ids]
@@ -367,7 +368,7 @@ class PlayAnimator:
         return self._create_figure(frames, updatemenus, sliders)
 
     def _create_figure(
-        self,
+        self: Self,
         frames: list[FrameInfo],
         updatemenus: list[dict],
         sliders: dict,
