@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
-from app.modules.animate import animate_play
+from app.modules.animation import animate_play
 from app.schemas.game import GameResponse
 from app.schemas.play_response import PlaySummaryResponse, PlayResponse
 

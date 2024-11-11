@@ -2,7 +2,7 @@ from typing import Dict, List
 import numpy as np
 from numpy.typing import NDArray
 import nfl_data_py as nfl
-from app.models.animation_types import TeamColors
+from app.modules.animation.types import TeamColors
 
 class ColorManager:
     def __init__(self) -> None:

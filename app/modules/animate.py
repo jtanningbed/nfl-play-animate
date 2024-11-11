@@ -1,6 +1,6 @@
-from app.modules.colors import ColorManager
-from app.modules.play_animator import PlayAnimator
-from app.models.animation_types import AnimationConfig
+from app.modules.animation.colors import ColorManager
+from app.modules.animation.animator import PlayAnimator
+from app.modules.animation.types import AnimationConfig
 import plotly.graph_objects as go
 import pandas as pd
 
