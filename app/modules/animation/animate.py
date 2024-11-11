@@ -4,6 +4,7 @@ from app.modules.animation.types import AnimationConfig
 import plotly.graph_objects as go
 import pandas as pd
 
+
 def animate_play(
     selected_game_df: pd.DataFrame,
     selected_play_df: pd.DataFrame,
@@ -20,7 +21,7 @@ def animate_play(
         slider_transition_duration=slider_transition_duration,
         redraw=redraw,
     )
-    
+
     animator = PlayAnimator(
         game_df=selected_game_df,
         play_df=selected_play_df,
@@ -28,5 +29,5 @@ def animate_play(
         color_provider=ColorManager(),
         config=config,
     )
-    
+
     return animator.create_animation()

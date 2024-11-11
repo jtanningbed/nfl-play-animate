@@ -1,6 +1,6 @@
 from app.config import SessionLocal
 from sqlalchemy.orm import Session
-from typing import Generator
+from collections.abc import Generator
 
 
 # Dependency to get the database session

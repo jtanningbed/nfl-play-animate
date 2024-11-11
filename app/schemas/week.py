@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import List
 
 
 class Week(BaseModel):
@@ -10,7 +9,7 @@ class Week(BaseModel):
 
 
 class WeekResponse(BaseModel):
-    weeks: List[int]
+    weeks: list[int]
 
     class Config:
         from_attributes = True  # Allows Pydantic to work directly with ORM models
