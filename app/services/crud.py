@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import numpy as np
 
 
-def get_weeks(db: Session):
+def get_weeks(db: Session) -> list:
     # Use the connection from the session
     with db.connection() as connection:
         return pd.read_sql("SELECT DISTINCT week FROM games ORDER BY week", connection)[
@@ -11,7 +11,7 @@ def get_weeks(db: Session):
         ].tolist()
 
 
-def get_games_by_week(db: Session, week: int):
+def get_games_by_week(db: Session, week: int) -> list[dict]:
     with db.connection() as connection:
         return pd.read_sql(
             "SELECT gameId, homeTeamAbbr, visitorTeamAbbr FROM games WHERE week = %s ORDER BY gameId",
@@ -20,7 +20,7 @@ def get_games_by_week(db: Session, week: int):
         ).to_dict(orient="records")
 
 
-def get_plays_by_game(db: Session, game_id: int):
+def get_plays_by_game(db: Session, game_id: int) -> list[dict]:
     with db.connection() as connection:
         return pd.read_sql(
             "SELECT playId, playDescription, quarter, gameClock FROM plays WHERE gameId = %s ORDER BY quarter, gameClock DESC",
@@ -29,7 +29,7 @@ def get_plays_by_game(db: Session, game_id: int):
         ).to_dict(orient="records")
 
 
-def get_play_data(db: Session, game_id: int, play_id: int):
+def get_play_data(db: Session, game_id: int, play_id: int) -> dict:
     gameattrs = "gameid,hometeamabbr,visitorteamabbr"
     playattrs = (
         "gameid,playid,playdescription,down,quarter,absoluteyardlinenumber,yardstogo"

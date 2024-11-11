@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get("/weeks", response_model=WeekResponse)
-def read_weeks(db: Session = Depends(get_db)):
+def read_weeks(db: Session = Depends(get_db)) -> WeekResponse:
     try:
         return {"weeks": crud.get_weeks(db)}
     except Exception as e:

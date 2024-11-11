@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+from typing import Self
 
 
 # Define a Pydantic settings class to handle environment variables
@@ -14,7 +15,7 @@ class Settings(BaseSettings):
     db_hostname: str
 
     @property
-    def database_url(self):
+    def database_url(self: Self) -> str:
         return f"postgresql://{self.db_user}:{self.db_password}@{self.db_hostname}/{self.db_name}"
 
     class Config:
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
 
 # Cache the settings to avoid reloading on every access
 @lru_cache()
-def get_settings():
+def get_settings() -> Settings:
     return Settings()
 
 
