@@ -18,9 +18,9 @@ class ColorManager:
         self._colors: dict[str, list[str]] = {}
         for team in team_colors_df.index:
             colors = [
-                f"#{color}" if color and not color.startswith("#") else color
+                f"#{color}" if isinstance(color, str) and not color.startswith("#") else color
                 for color in team_colors_df.loc[team]
-                if color and color.strip()
+                if isinstance(color, str) and color.strip()
             ]
             if colors:  # Only add teams with at least one color
                 self._colors[team] = colors
