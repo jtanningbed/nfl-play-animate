@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, Self
 import numpy as np
 from numpy.typing import NDArray
 import nfl_data_py as nfl
@@ -7,7 +7,7 @@ import pandas as pd
 class ColorManager:
     FOOTBALL_COLORS: Final[list[str]] = ["#CBB67C", "#663831"]
 
-    def __init__(self) -> None:
+    def __init__(self: Self) -> None:
         """Initialize the ColorManager with NFL team colors from nfl_data_py."""
         self.teams: pd.DataFrame = nfl.import_team_desc()
         team_colors_df: pd.DataFrame = self.teams.set_index("team_abbr")[
@@ -28,13 +28,13 @@ class ColorManager:
         # Add football colors
         self._colors["football"] = self.FOOTBALL_COLORS
 
-    def hex_to_rgb(self, hex_color: str) -> NDArray[np.int_]:
+    def hex_to_rgb(self: Self, hex_color: str) -> NDArray[np.int_]:
         """Convert hex color to RGB array."""
         return np.array(
             tuple(int(hex_color.lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
         )
 
-    def calculate_color_distance(self, hex1: str, hex2: str) -> float:
+    def calculate_color_distance(self: Self, hex1: str, hex2: str) -> float:
         """Calculate the perceptual distance between two colors."""
         if hex1 == hex2:
             return 0.0
@@ -46,11 +46,11 @@ class ColorManager:
         
         return float(np.sqrt(np.sum(weights * (rgb1 - rgb2) ** 2)))
 
-    def get_team_colors(self, team: str) -> list[str]:
+    def get_team_colors(self: Self, team: str) -> list[str]:
         """Get color scheme for a team."""
         return self._colors.get(team, ["#FFFFFF", "#000000"])
 
-    def get_contrasting_pairs(self, team1: str, team2: str) -> dict[str, list[str]]:
+    def get_contrasting_pairs(self: Self, team1: str, team2: str) -> dict[str, list[str]]:
         """Get contrasting color pairs for two teams."""
         color_array_1 = self.get_team_colors(team1)
         color_array_2 = self.get_team_colors(team2)
