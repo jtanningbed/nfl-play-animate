@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from typing import List
 
 
 class Game(BaseModel):
@@ -13,7 +12,7 @@ class Game(BaseModel):
 
 
 class GameResponse(BaseModel):
-    games: List[Game]
+    games: list[Game]
 
     class Config:
         from_attributes = True

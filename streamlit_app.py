@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import pandas as pd
-from app.modules.animate import animate_play
+from app.modules.animation import animate_play
 from app.schemas.game import GameResponse
 from app.schemas.play_response import PlaySummaryResponse, PlayResponse
 
@@ -68,8 +68,16 @@ if st.button("Animate Play"):
             f"Play Description: {play_data['quarter'].iloc[0]}Q {play_data['play_description'].iloc[0]}"
         )
 
-    # Call animate_play function
-    fig = animate_play(game_data, play_data, tracking_data)
+    # Call animate_play function with default animation settings
+    fig = animate_play(
+        selected_game_df=game_data,
+        selected_play_df=play_data,
+        selected_tracking_df=tracking_data,
+        frame_duration=100,
+        transition_duration=0,
+        slider_transition_duration=300,
+        redraw=True,
+    )
 
     # Display the figure
     # Update layout for correct aspect ratio
