@@ -1,10 +1,12 @@
+from typing import Dict, List
 import numpy as np
 from numpy.typing import NDArray
 import nfl_data_py as nfl
+from app.models.animation_types import TeamColors
 
-
-# You can inherit these colors from nflverse, this is for completeness/convenience
-colors = {
+class ColorManager:
+    def __init__(self) -> None:
+        self._colors: Dict[str, List[str]] = {
     "ARI": ["#97233F", "#000000", "#FFB612"],
     "ATL": ["#A71930", "#000000", "#A5ACAF"],
     "BAL": ["#241773", "#000000"],
@@ -38,41 +40,48 @@ colors = {
     "TEN": ["#0C2340", "#4B92DB", "#C8102E"],
     "WAS": ["#5A1414", "#FFB612"],
     "football": ["#CBB67C", "#663831"],
-}
-
-teams = nfl.import_team_desc()
-team_colors = teams.set_index("team_abbr")[
-    ["team_color", "team_color2", "team_color3", "team_color4"]
-].to_dict(orient="index")
-
-
-# Color utility functions (same as before)
-def hex_to_rgb_array(hex_color: str) -> NDArray[np.int_]:
-    return np.array(tuple(int(hex_color.lstrip("#")[i : i + 2], 16) for i in (0, 2, 4)))
-
-
-def ColorDistance(hex1: str, hex2: str) -> int:
-    if hex1 == hex2:
-        return 0
-    rgb1 = hex_to_rgb_array(hex1)
-    rgb2 = hex_to_rgb_array(hex2)
-    rm = 0.5 * (rgb1[0] + rgb2[0])
-    d = abs(sum((2 + rm, 4, 3 - rm) * (rgb1 - rgb2) ** 2)) ** 0.5
-    return d
-
-
-def ColorPairs(team1: str, team2: str) -> dict[str, list[str]]:
-    color_array_1 = colors[team1]
-    color_array_2 = colors[team2]
-    if ColorDistance(color_array_1[0], color_array_2[0]) < 500:
-        return {
-            team1: [color_array_1[0], color_array_1[1]],
-            team2: [color_array_2[1], color_array_2[0]],
-            "football": colors["football"],
         }
-    else:
+        self.teams = nfl.import_team_desc()
+        self.team_colors = self.teams.set_index("team_abbr")[
+            ["team_color", "team_color2", "team_color3", "team_color4"]
+        ].to_dict(orient="index")
+
+    def hex_to_rgb(self, hex_color: str) -> NDArray[np.int_]:
+        """Convert hex color to RGB array."""
+        return np.array(
+            tuple(int(hex_color.lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
+        )
+
+    def calculate_color_distance(self, hex1: str, hex2: str) -> float:
+        """Calculate the perceptual distance between two colors."""
+        if hex1 == hex2:
+            return 0.0
+        
+        rgb1 = self.hex_to_rgb(hex1)
+        rgb2 = self.hex_to_rgb(hex2)
+        rm = 0.5 * (rgb1[0] + rgb2[0])
+        weights = np.array([2 + rm, 4, 3 - rm])
+        
+        return float(np.sqrt(np.sum(weights * (rgb1 - rgb2) ** 2)))
+
+    def get_team_colors(self, team: str) -> List[str]:
+        """Get color scheme for a team."""
+        return self._colors.get(team, ["#FFFFFF", "#000000"])
+
+    def get_contrasting_pairs(self, team1: str, team2: str) -> Dict[str, List[str]]:
+        """Get contrasting color pairs for two teams."""
+        color_array_1 = self.get_team_colors(team1)
+        color_array_2 = self.get_team_colors(team2)
+        
+        if self.calculate_color_distance(color_array_1[0], color_array_2[0]) < 500:
+            return {
+                team1: [color_array_1[0], color_array_1[1]],
+                team2: [color_array_2[1], color_array_2[0]],
+                "football": self._colors["football"],
+            }
+        
         return {
             team1: [color_array_1[0], color_array_1[1]],
             team2: [color_array_2[0], color_array_2[1]],
-            "football": colors["football"],
+            "football": self._colors["football"],
         }
